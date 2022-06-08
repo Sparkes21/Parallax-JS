@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 const CANVAS_WIDTH = canvas.width = 800;
 const CANVAS_HEIGHT = canvas.height = 700;
 let gameSpeed = 5;
+// let gameFrame = 0;
 
 const backgroundLayer1 = new Image();
 backgroundLayer1.src =  'https://www.frankslaboratory.co.uk/downloads/layer-1.png';
@@ -15,7 +16,9 @@ backgroundLayer4.src = 'https://www.frankslaboratory.co.uk/downloads/layer-4.png
 const backgroundLayer5 = new Image();
 backgroundLayer5.src = 'https://www.frankslaboratory.co.uk/downloads/layer-5.png';
 
-const slider = document.getElementById('slider');
+window.addEventListener('load', function () {
+
+  const slider = document.getElementById('slider');
 slider.value = gameSpeed;
 const showGameSpeed = document.getElementById('showGameSpeed');
 showGameSpeed.innerHTML = gameSpeed;
@@ -30,7 +33,6 @@ class Layer {
     this.y = 0;
     this.width = 2400;
     this.height = 700;
-    this.x2 = this.width;
     this.image = image;
     this.speedModifier = speedModifier;
     this.speed = gameSpeed * this.speedModifier;
@@ -38,17 +40,14 @@ class Layer {
   update() {
     this.speed = gameSpeed * this.speedModifier;
     if (this.x <= -this.width) {
-      this.x = this.width + this.x2 - this.speed;
+      this.x = 0;
     }
-    if (this.x2 <= -this.width) {
-      this.x2 = this.width + this.x - this.speed;
-    }
-    this.x = Math.floor(this.x - this.speed);
-    this.x2 = Math.floor(this.x2 - this.speed);
+    this.x = this.x - this.speed;
+    //this.x = gameFrame * this.speed % this.width;
   };
   draw() {
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    ctx.drawImage(this.image, this.x2, this.y, this.width, this.height);
+    ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
   };
 }
 
@@ -65,7 +64,11 @@ function animate() {
   gameObjects.forEach(object => {
     object.update();
     object.draw();
-  })
+  });
+  // gameFrame--;
   requestAnimationFrame(animate);
 };
 animate();
+
+})
+
